@@ -8,7 +8,84 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<style>
+:root {
+  --ink: #10192A;
+  --ink-2: #1C2A44;
+  --paper: #DDD6C1;
+  --paper-2: #EAE4D3;
+  --ink-text: #1E1B12;
+  --cream-text: #ECE7D8;
+  --gold: #C68A3D;
+  --gold-dark: #8F5F24;
+  --red: #8B3128;
+  --muted: #8B8570;
+  --muted-dark: #9AA1B0;
+  --border-hair: rgba(30, 27, 18, 0.18);
+  --border-hair-dark: rgba(236, 231, 216, 0.18);
+  --font-display: 'Big Shoulders Display', sans-serif;
+  --font-body: 'IBM Plex Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink-text); font-family: var(--font-body); -webkit-font-smoothing: antialiased; }
+.ticker-bar { background: var(--ink); overflow: hidden; white-space: nowrap; border-bottom: 2px solid var(--gold); }
+.ticker-track { display: inline-block; padding: 10px 0; animation: scroll-left 60s linear infinite; font-family: var(--font-mono); font-size: 13px; color: var(--gold); letter-spacing: 0.02em; }
+.ticker-item { padding: 0 2.5rem; }
+.ticker-item::after { content: '//'; margin-left: 2.5rem; color: var(--muted-dark); }
+@keyframes scroll-left { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } }
+.hero { background: var(--ink); color: var(--cream-text); padding: 3.5rem 1.5rem 3rem; }
+.hero-inner { max-width: 900px; margin: 0 auto; }
+.dateline { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; color: var(--gold); margin: 0 0 0.75rem; text-transform: uppercase; }
+.hero-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(3.5rem, 12vw, 7rem); line-height: 0.92; margin: 0 0 1.25rem; letter-spacing: 0.01em; text-transform: uppercase; }
+.hero-sub { font-size: 17px; line-height: 1.6; max-width: 560px; color: var(--muted-dark); margin: 0 0 2rem; }
+.hero-stats { display: flex; gap: 2.5rem; flex-wrap: wrap; border-top: 1px solid var(--border-hair-dark); padding-top: 1.5rem; }
+.stat { display: flex; flex-direction: column; }
+.stat-value { font-family: var(--font-mono); font-size: 28px; font-weight: 500; color: var(--gold); }
+.stat-label { font-size: 12px; color: var(--muted-dark); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
+.feed-section { padding: 3rem 0 1rem; }
+.feed-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; }
+.section-title { font-family: var(--font-display); font-weight: 800; font-size: 2.2rem; text-transform: uppercase; margin: 0; letter-spacing: 0.01em; }
+.section-note { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin: 0; }
+.controls { display: flex; gap: 0.75rem; flex-wrap: wrap; margin: 1.5rem 0 1rem; align-items: center; }
+.controls input[type="text"], .controls select { font-family: var(--font-body); font-size: 14px; padding: 0.55rem 0.75rem; border: 1px solid var(--border-hair); border-radius: 3px; background: var(--paper-2); color: var(--ink-text); }
+.controls input[type="text"] { flex: 1 1 220px; }
+.result-count { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-left: auto; }
+.perforation { height: 10px; background-image: radial-gradient(circle at 50% 50%, var(--paper) 3px, transparent 3.5px); background-size: 20px 10px; background-position: center; margin: 0.5rem 0; border-top: 1px dashed var(--border-hair); border-bottom: 1px dashed var(--border-hair); }
+.dispatch-list { list-style: none; margin: 0; padding: 0; }
+.dispatch { border-bottom: 1px solid var(--border-hair); padding: 1.25rem 0; }
+.dispatch.empty { font-family: var(--font-mono); color: var(--muted); padding: 2rem 0; text-align: center; border-bottom: none; }
+.dispatch-meta { font-family: var(--font-mono); font-size: 12px; color: var(--gold-dark); text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 0.35rem; }
+.dispatch-title { font-size: 18px; font-weight: 600; margin: 0 0 0.2rem; }
+.dispatch-title a { color: var(--ink-text); text-decoration: none; border-bottom: 1px solid var(--gold); }
+.dispatch-title a:hover { color: var(--gold-dark); }
+.dispatch-company { font-size: 14px; color: var(--muted); margin: 0 0 0.5rem; }
+.dispatch-desc { font-size: 14px; line-height: 1.55; margin: 0 0 0.5rem; color: #4a4433; }
+.dispatch-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.tag { font-family: var(--font-mono); font-size: 11px; padding: 0.2rem 0.55rem; border: 1px solid var(--border-hair); border-radius: 2px; color: var(--muted); text-transform: uppercase; }
+.tag.salary { color: var(--red); border-color: var(--red); }
+.resume-section { background: var(--ink); color: var(--cream-text); margin-top: 3rem; padding: 3.5rem 1.5rem; }
+.resume-inner { max-width: 640px; margin: 0 auto; }
+.resume-section .section-title { color: var(--cream-text); }
+.resume-copy { font-size: 15px; line-height: 1.7; color: var(--muted-dark); }
+.resume-note { border-left: 2px solid var(--gold); padding-left: 1rem; }
+.resume-note strong { color: var(--gold); }
+.resume-form { display: flex; flex-direction: column; gap: 1.1rem; margin-top: 2rem; }
+.resume-form label { display: flex; flex-direction: column; gap: 0.4rem; font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted-dark); }
+.optional { text-transform: none; letter-spacing: 0; color: var(--muted-dark); opacity: 0.8; }
+.resume-form input { font-family: var(--font-body); font-size: 15px; padding: 0.7rem 0.8rem; border: 1px solid var(--border-hair-dark); border-radius: 3px; background: var(--ink-2); color: var(--cream-text); }
+.resume-form input::placeholder { color: var(--muted-dark); }
+.resume-form input[type="file"] { padding: 0.5rem; }
+#submitBtn { margin-top: 0.5rem; align-self: flex-start; background: var(--gold); color: #241703; border: none; font-family: var(--font-body); font-weight: 600; font-size: 15px; padding: 0.8rem 1.75rem; border-radius: 3px; cursor: pointer; }
+#submitBtn:hover { background: #D89A4D; }
+#submitBtn:disabled { opacity: 0.6; cursor: default; }
+.form-status { font-family: var(--font-mono); font-size: 13px; color: var(--gold); min-height: 1.2em; margin: 0; }
+.form-status.error { color: #E28A82; }
+.site-footer { background: var(--ink); color: var(--muted-dark); text-align: center; font-size: 12px; padding: 1.5rem; border-top: 1px solid var(--border-hair-dark); }
+@media (max-width: 600px) { .hero-stats { gap: 1.5rem; } .controls { flex-direction: column; align-items: stretch; } .result-count { margin-left: 0; } }
+</style>
 </head>
 <body>
 
@@ -24,18 +101,9 @@
     <h1 class="hero-title">TX JOB<br>WIRE</h1>
     <p class="hero-sub">Every job on this page is located in a Texas city, posted within the last 20 days, and pulled automatically. No manual curation, no stale listings.</p>
     <div class="hero-stats" id="heroStats">
-      <div class="stat">
-        <span class="stat-value" id="statCount">&mdash;</span>
-        <span class="stat-label">open dispatches</span>
-      </div>
-      <div class="stat">
-        <span class="stat-value" id="statCities">&mdash;</span>
-        <span class="stat-label">cities covered</span>
-      </div>
-      <div class="stat">
-        <span class="stat-value" id="statUpdated">&mdash;</span>
-        <span class="stat-label">last refreshed</span>
-      </div>
+      <div class="stat"><span class="stat-value" id="statCount">&mdash;</span><span class="stat-label">open dispatches</span></div>
+      <div class="stat"><span class="stat-value" id="statCities">&mdash;</span><span class="stat-label">cities covered</span></div>
+      <div class="stat"><span class="stat-value" id="statUpdated">&mdash;</span><span class="stat-label">last refreshed</span></div>
     </div>
   </div>
 </header>
@@ -49,12 +117,8 @@
 
     <div class="controls" role="search">
       <input type="text" id="searchInput" placeholder="Search title or company" aria-label="Search jobs">
-      <select id="cityFilter" aria-label="Filter by city">
-        <option value="">All Texas cities</option>
-      </select>
-      <select id="sourceFilter" aria-label="Filter by source">
-        <option value="">All sources</option>
-      </select>
+      <select id="cityFilter" aria-label="Filter by city"><option value="">All Texas cities</option></select>
+      <select id="sourceFilter" aria-label="Filter by source"><option value="">All sources</option></select>
       <span class="result-count" id="resultCount"></span>
     </div>
 
@@ -81,26 +145,11 @@
       </p>
 
       <form id="resumeForm" class="resume-form">
-        <label>
-          Full name
-          <input type="text" name="fullName" required autocomplete="name">
-        </label>
-        <label>
-          Email address
-          <input type="email" name="email" required autocomplete="email">
-        </label>
-        <label>
-          Preferred Texas city <span class="optional">(optional)</span>
-          <input type="text" name="preferredCity" placeholder="e.g. Austin, or leave blank for anywhere in TX">
-        </label>
-        <label>
-          Roles or keywords you're targeting <span class="optional">(optional)</span>
-          <input type="text" name="keywords" placeholder="e.g. machine learning engineer, data analyst">
-        </label>
-        <label>
-          Resume file <span class="optional">(PDF or Word, under 5MB)</span>
-          <input type="file" name="resumeFile" id="resumeFile" accept=".pdf,.doc,.docx" required>
-        </label>
+        <label>Full name<input type="text" name="fullName" required autocomplete="name"></label>
+        <label>Email address<input type="email" name="email" required autocomplete="email"></label>
+        <label>Preferred Texas city <span class="optional">(optional)</span><input type="text" name="preferredCity" placeholder="e.g. Austin, or leave blank for anywhere in TX"></label>
+        <label>Roles or keywords you're targeting <span class="optional">(optional)</span><input type="text" name="keywords" placeholder="e.g. machine learning engineer, data analyst"></label>
+        <label>Resume file <span class="optional">(PDF or Word, under 5MB)</span><input type="file" name="resumeFile" id="resumeFile" accept=".pdf,.doc,.docx" required></label>
         <button type="submit" id="submitBtn">Submit resume</button>
         <p class="form-status" id="formStatus" role="status"></p>
       </form>
@@ -109,9 +158,210 @@
 </main>
 
 <footer class="site-footer">
-  <p>TX Job Wire &mdash; sources: Adzuna, USAJobs. Not affiliated with any employer listed. Job data refreshes every 10 hours via GitHub Actions.</p>
+  <p>TX Job Wire &mdash; sources: Adzuna, USAJobs. Not affiliated with any employer listed. Job data refreshes every 10 hours via Google Apps Script.</p>
 </footer>
 
-<script src="script.js"></script>
+<script>
+// ---- Configuration ----
+// Paste the Web App URL you get after deploying Code.gs (Deploy > New
+// deployment > Web app > Execute as: Me, Who has access: Anyone).
+// This single URL is used both to fetch jobs (GET) and submit resumes (POST).
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzC7SkK7uMkIv3_NaBeDsdSUEY0InrHhTGIZy1j6dtE3xhA9wW4fsvQR0TZdXd4SF2O/exec";
+
+const REFRESH_HOURS = 10;
+let ALL_JOBS = [];
+
+async function loadJobs() {
+  try {
+    const res = await fetch(GAS_URL, { cache: "no-store" });
+    const data = await res.json();
+    ALL_JOBS = data.jobs || [];
+    renderStats(data);
+    populateFilters(ALL_JOBS);
+    renderTicker(ALL_JOBS);
+    renderDispatches(ALL_JOBS);
+  } catch (err) {
+    console.error("Could not load job feed:", err);
+    document.getElementById("dispatchList").innerHTML =
+      '<li class="dispatch empty">The feed couldn\'t be loaded. Try refreshing the page.</li>';
+  }
+}
+
+function timeAgo(isoDate) {
+  if (!isoDate) return "unknown";
+  const then = new Date(isoDate);
+  const diffMs = Date.now() - then.getTime();
+  const hours = Math.floor(diffMs / 3600000);
+  if (hours < 1) return "just now";
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+}
+
+function renderStats(data) {
+  document.getElementById("statCount").textContent = data.job_count ?? ALL_JOBS.length;
+  const cities = new Set(ALL_JOBS.map(j => (j.city || "").trim()).filter(Boolean));
+  document.getElementById("statCities").textContent = cities.size;
+  document.getElementById("statUpdated").textContent = data.generated_at ? timeAgo(data.generated_at) : "pending";
+
+  const nextEl = document.getElementById("nextRefresh");
+  if (data.generated_at) {
+    const next = new Date(new Date(data.generated_at).getTime() + REFRESH_HOURS * 3600000);
+    nextEl.textContent = `Refreshes every ${REFRESH_HOURS} hours \u2014 next refresh around ${next.toLocaleString("en-US", { hour: "numeric", minute: "2-digit", month: "short", day: "numeric" })}.`;
+  }
+
+  document.getElementById("dateline").textContent =
+    `TEXAS, USA \u2014 ${cities.size} CITIES \u2014 UPDATED ${data.generated_at ? timeAgo(data.generated_at).toUpperCase() : "PENDING"}`;
+}
+
+function populateFilters(jobs) {
+  const citySelect = document.getElementById("cityFilter");
+  const sourceSelect = document.getElementById("sourceFilter");
+  const cities = [...new Set(jobs.map(j => (j.city || "").trim()).filter(Boolean))].sort();
+  const sources = [...new Set(jobs.map(j => j.source).filter(Boolean))].sort();
+
+  cities.forEach(city => {
+    const opt = document.createElement("option");
+    opt.value = city; opt.textContent = city;
+    citySelect.appendChild(opt);
+  });
+  sources.forEach(source => {
+    const opt = document.createElement("option");
+    opt.value = source; opt.textContent = source;
+    sourceSelect.appendChild(opt);
+  });
+}
+
+function renderTicker(jobs) {
+  const track = document.getElementById("tickerTrack");
+  if (!jobs.length) {
+    track.innerHTML = '<span class="ticker-item">No dispatches on file yet \u2014 check back after the next refresh.</span>';
+    return;
+  }
+  const headlines = jobs.slice(0, 20).map(j => `${j.title} \u2014 ${j.city}, TX`);
+  const doubled = [...headlines, ...headlines];
+  track.innerHTML = doubled.map(h => `<span class="ticker-item">${escapeHtml(h)}</span>`).join("");
+}
+
+function renderDispatches(jobs) {
+  const list = document.getElementById("dispatchList");
+  const countEl = document.getElementById("resultCount");
+
+  if (!jobs.length) {
+    list.innerHTML = '<li class="dispatch empty">No jobs on file yet. The feed refreshes every 10 hours \u2014 check back soon.</li>';
+    countEl.textContent = "";
+    return;
+  }
+
+  countEl.textContent = `${jobs.length} shown`;
+
+  list.innerHTML = jobs.map(job => `
+    <li class="dispatch">
+      <p class="dispatch-meta">${escapeHtml(job.city || "TX")}, TX \u2014 ${job.days_old != null ? job.days_old + "d old" : ""} \u2014 ${escapeHtml(job.source || "")}</p>
+      <h3 class="dispatch-title"><a href="${escapeAttr(job.url || '#')}" target="_blank" rel="noopener noreferrer">${escapeHtml(job.title || "Untitled role")}</a></h3>
+      <p class="dispatch-company">${escapeHtml(job.company || "Undisclosed employer")}</p>
+      ${job.description ? `<p class="dispatch-desc">${escapeHtml(job.description)}${job.description.length >= 280 ? "\u2026" : ""}</p>` : ""}
+      <div class="dispatch-tags">
+        ${job.salary ? `<span class="tag salary">${escapeHtml(job.salary)}</span>` : ""}
+        <span class="tag">${escapeHtml(job.posted_date || "")}</span>
+      </div>
+    </li>
+  `).join("");
+}
+
+function applyFilters() {
+  const search = document.getElementById("searchInput").value.trim().toLowerCase();
+  const city = document.getElementById("cityFilter").value;
+  const source = document.getElementById("sourceFilter").value;
+
+  const filtered = ALL_JOBS.filter(j => {
+    if (city && j.city !== city) return false;
+    if (source && j.source !== source) return false;
+    if (search) {
+      const haystack = `${j.title} ${j.company}`.toLowerCase();
+      if (!haystack.includes(search)) return false;
+    }
+    return true;
+  });
+  renderDispatches(filtered);
+}
+
+function escapeHtml(str) {
+  return String(str ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+function escapeAttr(str) { return escapeHtml(str); }
+
+document.getElementById("searchInput").addEventListener("input", applyFilters);
+document.getElementById("cityFilter").addEventListener("change", applyFilters);
+document.getElementById("sourceFilter").addEventListener("change", applyFilters);
+
+// ---- Resume form submission ----
+const resumeForm = document.getElementById("resumeForm");
+const formStatus = document.getElementById("formStatus");
+const submitBtn = document.getElementById("submitBtn");
+
+resumeForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  if (GAS_URL.includes("PASTE_YOUR")) {
+    formStatus.textContent = "Form isn't connected yet \u2014 the site owner needs to add the Apps Script URL.";
+    formStatus.classList.add("error");
+    return;
+  }
+
+  const fileInput = document.getElementById("resumeFile");
+  const file = fileInput.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    formStatus.textContent = "That file is over 5MB. Please upload a smaller file.";
+    formStatus.classList.add("error");
+    return;
+  }
+
+  submitBtn.disabled = true;
+  formStatus.classList.remove("error");
+  formStatus.textContent = "Uploading\u2026";
+
+  try {
+    const base64 = await fileToBase64(file);
+    const payload = new FormData();
+    payload.append("fullName", resumeForm.fullName.value);
+    payload.append("email", resumeForm.email.value);
+    payload.append("preferredCity", resumeForm.preferredCity.value);
+    payload.append("keywords", resumeForm.keywords.value);
+    payload.append("fileName", file.name);
+    payload.append("mimeType", file.type || "application/octet-stream");
+    payload.append("resumeData", base64);
+    payload.append("submittedAt", new Date().toISOString());
+
+    // Apps Script web apps redirect through googleusercontent.com, which
+    // usually strips CORS headers on the redirected response even though
+    // the POST itself succeeds server-side. We fire the request and treat
+    // it as submitted once it settles, rather than depending on reading
+    // the response body.
+    await fetch(GAS_URL, { method: "POST", body: payload }).catch(() => null);
+
+    formStatus.textContent = "Resume received. We'll email you once matching jobs come through the feed.";
+    resumeForm.reset();
+  } catch (err) {
+    console.error(err);
+    formStatus.textContent = "Something went wrong reading that file. Try again or use a different file.";
+    formStatus.classList.add("error");
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(",")[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+loadJobs();
+</script>
 </body>
 </html>
