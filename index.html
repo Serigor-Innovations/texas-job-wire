@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TX Job Wire — Texas jobs, refreshed every 10 hours</title>
+<meta name="description" content="A live feed of jobs located in Texas, USA, no more than 20 days old, refreshed automatically every 10 hours.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="ticker-bar" aria-label="Latest job headlines">
+  <div class="ticker-track" id="tickerTrack">
+    <span class="ticker-item">Loading latest dispatches&hellip;</span>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="hero-inner">
+    <p class="dateline" id="dateline">TEXAS, USA — WIRE SERVICE</p>
+    <h1 class="hero-title">TX JOB<br>WIRE</h1>
+    <p class="hero-sub">Every job on this page is located in a Texas city, posted within the last 20 days, and pulled automatically. No manual curation, no stale listings.</p>
+    <div class="hero-stats" id="heroStats">
+      <div class="stat">
+        <span class="stat-value" id="statCount">&mdash;</span>
+        <span class="stat-label">open dispatches</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="statCities">&mdash;</span>
+        <span class="stat-label">cities covered</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="statUpdated">&mdash;</span>
+        <span class="stat-label">last refreshed</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="feed-section">
+    <div class="feed-header">
+      <h2 class="section-title">The feed</h2>
+      <p class="section-note" id="nextRefresh">Refreshes automatically every 10 hours.</p>
+    </div>
+
+    <div class="controls" role="search">
+      <input type="text" id="searchInput" placeholder="Search title or company" aria-label="Search jobs">
+      <select id="cityFilter" aria-label="Filter by city">
+        <option value="">All Texas cities</option>
+      </select>
+      <select id="sourceFilter" aria-label="Filter by source">
+        <option value="">All sources</option>
+      </select>
+      <span class="result-count" id="resultCount"></span>
+    </div>
+
+    <div class="perforation" aria-hidden="true"></div>
+
+    <ol class="dispatch-list" id="dispatchList">
+      <li class="dispatch empty">Fetching the feed&hellip;</li>
+    </ol>
+  </section>
+
+  <section class="resume-section" id="resume">
+    <div class="resume-inner">
+      <p class="dateline">WESTERN UNION OF CAREERS</p>
+      <h2 class="section-title">File your resume</h2>
+      <p class="resume-copy">
+        Submit your resume to get notified by email whenever a Texas job
+        matching your profile comes through the feed &mdash; no need to
+        check the site yourself every day.
+      </p>
+      <p class="resume-copy resume-note">
+        <strong>Where this stands today:</strong> matching is launching
+        soon, about a week out. Submit now and you'll be on the list
+        from day one &mdash; we'll email you as soon as it's live.
+      </p>
+
+      <form id="resumeForm" class="resume-form">
+        <label>
+          Full name
+          <input type="text" name="fullName" required autocomplete="name">
+        </label>
+        <label>
+          Email address
+          <input type="email" name="email" required autocomplete="email">
+        </label>
+        <label>
+          Preferred Texas city <span class="optional">(optional)</span>
+          <input type="text" name="preferredCity" placeholder="e.g. Austin, or leave blank for anywhere in TX">
+        </label>
+        <label>
+          Roles or keywords you're targeting <span class="optional">(optional)</span>
+          <input type="text" name="keywords" placeholder="e.g. machine learning engineer, data analyst">
+        </label>
+        <label>
+          Resume file <span class="optional">(PDF or Word, under 5MB)</span>
+          <input type="file" name="resumeFile" id="resumeFile" accept=".pdf,.doc,.docx" required>
+        </label>
+        <button type="submit" id="submitBtn">Submit resume</button>
+        <p class="form-status" id="formStatus" role="status"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>TX Job Wire &mdash; sources: Adzuna, USAJobs. Not affiliated with any employer listed. Job data refreshes every 10 hours via GitHub Actions.</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
