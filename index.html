@@ -291,6 +291,12 @@ main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
         <option value="Not specified">Not specified</option>
       </select>
       <select id="techFilter" aria-label="Filter by technology"><option value="">Any technology</option></select>
+      <select id="clearanceFilter" aria-label="Filter by security clearance">
+        <option value="">Any clearance status</option>
+        <option value="none">No clearance mentioned</option>
+        <option value="required">Clearance required</option>
+      </select>
+      <select id="hiringPathFilter" aria-label="Filter by who can apply"><option value="">Anyone eligible</option></select>
       <span class="result-count" id="resultCount"></span>
     </div>
 
@@ -542,9 +548,11 @@ function populateFilters(jobs) {
   const citySelect = document.getElementById("cityFilter");
   const sourceSelect = document.getElementById("sourceFilter");
   const techSelect = document.getElementById("techFilter");
+  const hiringPathSelect = document.getElementById("hiringPathFilter");
   const cities = [...new Set(jobs.map(j => (j.city || "").trim()).filter(Boolean))].sort();
   const sources = [...new Set(jobs.map(j => j.source).filter(Boolean))].sort();
   const techs = [...new Set(jobs.flatMap(j => j.tech_tags || []))].sort();
+  const hiringPaths = [...new Set(jobs.map(j => (j.hiring_path || "").trim()).filter(Boolean))].sort();
 
   cities.forEach(city => {
     const opt = document.createElement("option");
@@ -560,6 +568,11 @@ function populateFilters(jobs) {
     const opt = document.createElement("option");
     opt.value = tech; opt.textContent = tech;
     techSelect.appendChild(opt);
+  });
+  hiringPaths.forEach(path => {
+    const opt = document.createElement("option");
+    opt.value = path; opt.textContent = path;
+    hiringPathSelect.appendChild(opt);
   });
 }
 
@@ -598,6 +611,7 @@ function renderDispatches(jobs) {
     const descId = `desc-${idx}`;
 
     const techTagsHtml = (job.tech_tags || []).slice(0, 5).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("");
+    const salaryText = job.salary ? job.salary + (job.salary_is_estimated ? " (est.)" : "") : "";
 
     return `
     <li class="dispatch${isInternal ? ' internal' : ''}">
@@ -613,11 +627,15 @@ function renderDispatches(jobs) {
       ` : ""}
       <div class="dispatch-tags">
         ${isInternal ? `<span class="tag our-jobs">Our Jobs</span>` : ""}
-        ${job.salary ? `<span class="tag salary">${escapeHtml(job.salary)}</span>` : ""}
+        ${salaryText ? `<span class="tag salary">${escapeHtml(salaryText)}</span>` : ""}
         <span class="tag">${escapeHtml(job.posted_date || "")}</span>
+        ${job.apply_by ? `<span class="tag salary">Apply by ${escapeHtml(job.apply_by)}</span>` : ""}
         ${job.job_type && job.job_type !== "Not specified" ? `<span class="tag">${escapeHtml(job.job_type)}</span>` : ""}
         ${job.remote_type && job.remote_type !== "Not specified" ? `<span class="tag">${escapeHtml(job.remote_type)}</span>` : ""}
         ${job.experience_level && job.experience_level !== "Not specified" ? `<span class="tag">${escapeHtml(job.experience_level)}</span>` : ""}
+        ${job.job_grade ? `<span class="tag">${escapeHtml(job.job_grade)}</span>` : ""}
+        ${job.security_clearance ? `<span class="tag salary">Clearance: ${escapeHtml(job.security_clearance)}</span>` : ""}
+        ${job.category_label ? `<span class="tag">${escapeHtml(job.category_label)}</span>` : ""}
         ${techTagsHtml}
         ${isInternal ? `<button class="apply-btn" data-job-id="${escapeAttr(job.id)}" data-job-title="${escapeAttr(job.title)}">Apply now</button>` : ""}
       </div>
@@ -650,6 +668,8 @@ function applyFilters() {
   const remoteType = document.getElementById("remoteFilter").value;
   const experience = document.getElementById("experienceFilter").value;
   const tech = document.getElementById("techFilter").value;
+  const clearance = document.getElementById("clearanceFilter").value;
+  const hiringPath = document.getElementById("hiringPathFilter").value;
 
   const filtered = ALL_JOBS.filter(j => {
     if (city && j.city !== city) return false;
@@ -660,6 +680,9 @@ function applyFilters() {
     if (remoteType && j.remote_type !== remoteType) return false;
     if (experience && j.experience_level !== experience) return false;
     if (tech && !(j.tech_tags || []).includes(tech)) return false;
+    if (clearance === "none" && j.security_clearance) return false;
+    if (clearance === "required" && !j.security_clearance) return false;
+    if (hiringPath && j.hiring_path !== hiringPath) return false;
     if (search) {
       const haystack = `${j.title} ${j.company} ${(j.tech_tags || []).join(" ")}`.toLowerCase();
       if (!haystack.includes(search)) return false;
@@ -681,6 +704,8 @@ document.getElementById("jobTypeFilter").addEventListener("change", applyFilters
 document.getElementById("remoteFilter").addEventListener("change", applyFilters);
 document.getElementById("experienceFilter").addEventListener("change", applyFilters);
 document.getElementById("techFilter").addEventListener("change", applyFilters);
+document.getElementById("clearanceFilter").addEventListener("change", applyFilters);
+document.getElementById("hiringPathFilter").addEventListener("change", applyFilters);
 
 // ---- General resume form submission ----
 const resumeForm = document.getElementById("resumeForm");
