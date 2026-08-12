@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TX Job Wire — Texas tech jobs, refreshed every 10 hours</title>
-<meta name="description" content="A live feed of tech jobs located in Texas, USA, no more than 20 days old, refreshed automatically every 10 hours.">
+<title id="pageTitle">TX Job Wire — Texas tech jobs, refreshed every 10 hours</title>
+<meta id="pageDescription" name="description" content="A live feed of tech jobs located in Texas, USA, no more than 20 days old, refreshed automatically every 10 hours.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -245,8 +245,8 @@ main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
 <header class="hero">
   <div class="hero-inner">
     <p class="dateline" id="dateline">TEXAS, USA — WIRE SERVICE</p>
-    <h1 class="hero-title">TX JOB<br>WIRE</h1>
-    <p class="hero-sub">Every job on this page is a tech role located in a Texas city, posted within the last 20 days, and pulled automatically. No general/non-tech listings, no manual curation, no stale postings.</p>
+    <h1 class="hero-title" id="heroTitleText">TX JOB<br>WIRE</h1>
+    <p class="hero-sub" id="heroSubText">Every job on this page is a tech role located in a Texas city, posted within the last 20 days, and pulled automatically. No general/non-tech listings, no manual curation, no stale postings.</p>
     <div class="hero-stats" id="heroStats">
       <div class="stat"><span class="stat-value" id="statCount">&mdash;</span><span class="stat-label">open dispatches</span></div>
       <div class="stat"><span class="stat-value" id="statCities">&mdash;</span><span class="stat-label">cities covered</span></div>
@@ -263,9 +263,34 @@ main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
     </div>
 
     <div class="controls" role="search">
-      <input type="text" id="searchInput" placeholder="Search title or company" aria-label="Search jobs">
-      <select id="cityFilter" aria-label="Filter by city"><option value="">All Texas cities</option></select>
+      <input type="text" id="searchInput" placeholder="Search title, company, or keyword" aria-label="Search jobs">
+      <select id="cityFilter" aria-label="Filter by city"><option value="" id="cityFilterDefaultOption">All Texas cities</option></select>
       <select id="sourceFilter" aria-label="Filter by source"><option value="">All sources</option></select>
+      <select id="jobTypeFilter" aria-label="Filter by job type">
+        <option value="">Any job type</option>
+        <option value="Full-time">Full-time</option>
+        <option value="Part-time">Part-time</option>
+        <option value="Contract">Contract</option>
+        <option value="Internship">Internship</option>
+        <option value="Permanent">Permanent</option>
+        <option value="Not specified">Not specified</option>
+      </select>
+      <select id="remoteFilter" aria-label="Filter by remote type">
+        <option value="">Any location type</option>
+        <option value="Remote">Remote</option>
+        <option value="Hybrid">Hybrid</option>
+        <option value="On-site">On-site</option>
+        <option value="Remote/Hybrid eligible">Remote/Hybrid eligible</option>
+        <option value="Not specified">Not specified</option>
+      </select>
+      <select id="experienceFilter" aria-label="Filter by experience level">
+        <option value="">Any experience level</option>
+        <option value="Entry-level">Entry-level</option>
+        <option value="Mid-level">Mid-level</option>
+        <option value="Senior">Senior</option>
+        <option value="Not specified">Not specified</option>
+      </select>
+      <select id="techFilter" aria-label="Filter by technology"><option value="">Any technology</option></select>
       <span class="result-count" id="resultCount"></span>
     </div>
 
@@ -280,7 +305,7 @@ main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
     <div class="resume-inner">
       <p class="dateline">WESTERN UNION OF CAREERS</p>
       <h2 class="section-title">File your resume</h2>
-      <p class="resume-copy">
+      <p class="resume-copy" id="resumeCopyText">
         Submit your resume to get notified by email whenever a Texas
         tech job matching your profile comes through the feed &mdash;
         no need to check the site yourself every day.
@@ -300,7 +325,7 @@ main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
         <label>Full name<input type="text" name="fullName" required autocomplete="name"></label>
         <label>Mobile number<input type="tel" name="mobileNumber" required autocomplete="tel"></label>
         <label>Email address<input type="email" name="email" required autocomplete="email"></label>
-        <label>Current location<input type="text" name="currentLocation" required placeholder="e.g. Austin, TX"></label>
+        <label>Current location<input type="text" name="currentLocation" id="currentLocationInput" required placeholder="e.g. Austin, TX"></label>
         <label>Job alert keywords <span class="optional">(optional, up to 3 — once alerts launch, these are what we'll match you against)</span><input type="text" name="keywords" placeholder="e.g. machine learning engineer, data analyst"></label>
         <label>Know someone who should apply too? <span class="optional">(optional, their email)</span><input type="email" name="referral" placeholder="friend@example.com"></label>
         <label>Resume file <span class="optional">(PDF or Word, under 5MB)</span><input type="file" name="resumeFile" id="resumeFile" accept=".pdf,.doc,.docx" required></label>
@@ -313,7 +338,7 @@ main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
 </main>
 
 <footer class="site-footer">
-  <p>TX Job Wire &mdash; sources: Adzuna, USAJobs, and our own hiring team. Job data refreshes every 10 hours.</p>
+  <p id="footerText">TX Job Wire &mdash; sources: Adzuna, USAJobs, and our own hiring team. Job data refreshes every 10 hours.</p>
 </footer>
 
 <!-- ============ THREE INDEPENDENT FLOATING RESUME WIDGETS ============ -->
@@ -433,10 +458,42 @@ main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
 // Paste the Web App URL from deploying Code.gs as a Web App.
 // Used for: fetching the feed (GET), the general resume form (POST),
 // and the per-job apply form (POST).
+// ===================== STATE CONFIGURATION =====================
+// This is the ONLY thing (besides GAS_URL) that changes when copying
+// this site to a new state.
+const STATE_NAME = "Texas";
+const STATE_ABBR = "TX";
+const EXAMPLE_CITY = "Austin";  // used only in a placeholder hint
+// =================================================================
+
 const GAS_URL = "https://script.google.com/macros/s/AKfycbzC7SkK7uMkIv3_NaBeDsdSUEY0InrHhTGIZy1j6dtE3xhA9wW4fsvQR0TZdXd4SF2O/exec";
 
 const REFRESH_HOURS = 10;
 let ALL_JOBS = [];
+
+// Fills in every piece of state-specific text from the constants above.
+// This is the entire reason a new state deployment only needs 3 line
+// changes at the top of this file instead of hunting through the HTML.
+function applyStateBranding() {
+  document.getElementById("pageTitle").textContent =
+    `${STATE_ABBR} Job Wire — ${STATE_NAME} tech jobs, refreshed every 10 hours`;
+  document.getElementById("pageDescription").setAttribute("content",
+    `A live feed of tech jobs located in ${STATE_NAME}, USA, no more than 20 days old, refreshed automatically every 10 hours.`);
+  document.getElementById("heroTitleText").innerHTML = `${STATE_ABBR} JOB<br>WIRE`;
+  document.getElementById("heroSubText").textContent =
+    `Every job on this page is a tech role located in a ${STATE_NAME} city, posted within the last 20 days, and pulled automatically. No general/non-tech listings, no manual curation, no stale postings.`;
+  document.getElementById("cityFilterDefaultOption").textContent = `All ${STATE_NAME} cities`;
+  document.getElementById("resumeCopyText").innerHTML =
+    `Submit your resume to get notified by email whenever a ${STATE_NAME}
+    tech job matching your profile comes through the feed &mdash;
+    no need to check the site yourself every day.`;
+  document.getElementById("currentLocationInput").setAttribute("placeholder", `e.g. ${EXAMPLE_CITY}, ${STATE_ABBR}`);
+  document.getElementById("footerText").innerHTML =
+    `${STATE_ABBR} Job Wire &mdash; sources: Adzuna, USAJobs, and our own hiring team. Job data refreshes every 10 hours.`;
+  document.getElementById("dateline").textContent = `${STATE_NAME.toUpperCase()}, USA — WIRE SERVICE`;
+}
+applyStateBranding();
+
 
 async function loadJobs() {
   try {
@@ -478,14 +535,16 @@ function renderStats(data) {
   }
 
   document.getElementById("dateline").textContent =
-    `TEXAS, USA \u2014 ${cities.size} CITIES \u2014 UPDATED ${data.generated_at ? timeAgo(data.generated_at).toUpperCase() : "PENDING"}`;
+    `${STATE_NAME.toUpperCase()}, USA \u2014 ${cities.size} CITIES \u2014 UPDATED ${data.generated_at ? timeAgo(data.generated_at).toUpperCase() : "PENDING"}`;
 }
 
 function populateFilters(jobs) {
   const citySelect = document.getElementById("cityFilter");
   const sourceSelect = document.getElementById("sourceFilter");
+  const techSelect = document.getElementById("techFilter");
   const cities = [...new Set(jobs.map(j => (j.city || "").trim()).filter(Boolean))].sort();
   const sources = [...new Set(jobs.map(j => j.source).filter(Boolean))].sort();
+  const techs = [...new Set(jobs.flatMap(j => j.tech_tags || []))].sort();
 
   cities.forEach(city => {
     const opt = document.createElement("option");
@@ -497,6 +556,11 @@ function populateFilters(jobs) {
     opt.value = source; opt.textContent = source;
     sourceSelect.appendChild(opt);
   });
+  techs.forEach(tech => {
+    const opt = document.createElement("option");
+    opt.value = tech; opt.textContent = tech;
+    techSelect.appendChild(opt);
+  });
 }
 
 function renderTicker(jobs) {
@@ -505,7 +569,7 @@ function renderTicker(jobs) {
     track.innerHTML = '<span class="ticker-item">No dispatches on file yet \u2014 check back after the next refresh.</span>';
     return;
   }
-  const headlines = jobs.slice(0, 20).map(j => `${j.title} \u2014 ${j.city}, TX`);
+  const headlines = jobs.slice(0, 20).map(j => `${j.title} \u2014 ${j.city}, ${STATE_ABBR}`);
   const doubled = [...headlines, ...headlines];
   track.innerHTML = doubled.map(h => `<span class="ticker-item">${escapeHtml(h)}</span>`).join("");
 }
@@ -522,22 +586,39 @@ function renderDispatches(jobs) {
 
   countEl.textContent = `${jobs.length} shown`;
 
-  list.innerHTML = jobs.map(job => {
+  list.innerHTML = jobs.map((job, idx) => {
     const isInternal = !!job.is_internal;
     const linkOrButton = isInternal
       ? escapeHtml(job.title || "Untitled role")
       : `<a href="${escapeAttr(job.url || '#')}" target="_blank" rel="noopener noreferrer">${escapeHtml(job.title || "Untitled role")}</a>`;
 
+    const desc = job.description || "";
+    const isLong = desc.length > 280;
+    const shortDesc = isLong ? desc.slice(0, 280) + "\u2026" : desc;
+    const descId = `desc-${idx}`;
+
+    const techTagsHtml = (job.tech_tags || []).slice(0, 5).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("");
+
     return `
     <li class="dispatch${isInternal ? ' internal' : ''}">
-      <p class="dispatch-meta">${escapeHtml(job.city || "TX")}, TX \u2014 ${job.days_old != null ? job.days_old + "d old" : ""} \u2014 ${escapeHtml(job.source || "")}</p>
+      <p class="dispatch-meta">${escapeHtml(job.city || STATE_ABBR)}, ${STATE_ABBR} \u2014 ${job.days_old != null ? job.days_old + "d old" : ""} \u2014 ${escapeHtml(job.source || "")}</p>
       <h3 class="dispatch-title">${linkOrButton}</h3>
       <p class="dispatch-company">${escapeHtml(job.company || "Undisclosed employer")}</p>
-      ${job.description ? `<p class="dispatch-desc">${escapeHtml(job.description)}${job.description.length >= 280 ? "\u2026" : ""}</p>` : ""}
+      ${desc ? `
+        <p class="dispatch-desc" id="${descId}-short">${escapeHtml(shortDesc)}</p>
+        ${isLong ? `
+          <p class="dispatch-desc" id="${descId}-full" style="display:none;">${escapeHtml(desc)}</p>
+          <button type="button" class="tk-small-btn read-more-btn" data-target="${descId}">Read more</button>
+        ` : ""}
+      ` : ""}
       <div class="dispatch-tags">
         ${isInternal ? `<span class="tag our-jobs">Our Jobs</span>` : ""}
         ${job.salary ? `<span class="tag salary">${escapeHtml(job.salary)}</span>` : ""}
         <span class="tag">${escapeHtml(job.posted_date || "")}</span>
+        ${job.job_type && job.job_type !== "Not specified" ? `<span class="tag">${escapeHtml(job.job_type)}</span>` : ""}
+        ${job.remote_type && job.remote_type !== "Not specified" ? `<span class="tag">${escapeHtml(job.remote_type)}</span>` : ""}
+        ${job.experience_level && job.experience_level !== "Not specified" ? `<span class="tag">${escapeHtml(job.experience_level)}</span>` : ""}
+        ${techTagsHtml}
         ${isInternal ? `<button class="apply-btn" data-job-id="${escapeAttr(job.id)}" data-job-title="${escapeAttr(job.title)}">Apply now</button>` : ""}
       </div>
     </li>
@@ -547,18 +628,40 @@ function renderDispatches(jobs) {
   list.querySelectorAll(".apply-btn").forEach(btn => {
     btn.addEventListener("click", () => openApplyModal(btn.dataset.jobId, btn.dataset.jobTitle));
   });
+
+  list.querySelectorAll(".read-more-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.target;
+      const shortEl = document.getElementById(`${id}-short`);
+      const fullEl = document.getElementById(`${id}-full`);
+      const expanded = fullEl.style.display !== "none";
+      fullEl.style.display = expanded ? "none" : "block";
+      shortEl.style.display = expanded ? "block" : "none";
+      btn.textContent = expanded ? "Read more" : "Show less";
+    });
+  });
 }
 
 function applyFilters() {
   const search = document.getElementById("searchInput").value.trim().toLowerCase();
   const city = document.getElementById("cityFilter").value;
   const source = document.getElementById("sourceFilter").value;
+  const jobType = document.getElementById("jobTypeFilter").value;
+  const remoteType = document.getElementById("remoteFilter").value;
+  const experience = document.getElementById("experienceFilter").value;
+  const tech = document.getElementById("techFilter").value;
 
   const filtered = ALL_JOBS.filter(j => {
     if (city && j.city !== city) return false;
     if (source && j.source !== source) return false;
+    // Substring match — Adzuna's job_type can be a compound string like
+    // "Full-time · Permanent", so an exact match against "Full-time" alone would miss it.
+    if (jobType && !(j.job_type || "").includes(jobType)) return false;
+    if (remoteType && j.remote_type !== remoteType) return false;
+    if (experience && j.experience_level !== experience) return false;
+    if (tech && !(j.tech_tags || []).includes(tech)) return false;
     if (search) {
-      const haystack = `${j.title} ${j.company}`.toLowerCase();
+      const haystack = `${j.title} ${j.company} ${(j.tech_tags || []).join(" ")}`.toLowerCase();
       if (!haystack.includes(search)) return false;
     }
     return true;
@@ -574,6 +677,10 @@ function escapeAttr(str) { return escapeHtml(str); }
 document.getElementById("searchInput").addEventListener("input", applyFilters);
 document.getElementById("cityFilter").addEventListener("change", applyFilters);
 document.getElementById("sourceFilter").addEventListener("change", applyFilters);
+document.getElementById("jobTypeFilter").addEventListener("change", applyFilters);
+document.getElementById("remoteFilter").addEventListener("change", applyFilters);
+document.getElementById("experienceFilter").addEventListener("change", applyFilters);
+document.getElementById("techFilter").addEventListener("change", applyFilters);
 
 // ---- General resume form submission ----
 const resumeForm = document.getElementById("resumeForm");
