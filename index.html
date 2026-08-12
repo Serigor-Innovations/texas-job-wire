@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TX Job Wire — Texas jobs, refreshed every 10 hours</title>
-<meta name="description" content="A live feed of jobs located in Texas, USA, no more than 20 days old, refreshed automatically every 10 hours.">
+<title>TX Job Wire — Texas tech jobs, refreshed every 10 hours</title>
+<meta name="description" content="A live feed of tech jobs located in Texas, USA, no more than 20 days old, refreshed automatically every 10 hours.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -57,15 +57,19 @@ main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
 .dispatch-list { list-style: none; margin: 0; padding: 0; }
 .dispatch { border-bottom: 1px solid var(--border-hair); padding: 1.25rem 0; }
 .dispatch.empty { font-family: var(--font-mono); color: var(--muted); padding: 2rem 0; text-align: center; border-bottom: none; }
+.dispatch.internal { background: rgba(198, 138, 61, 0.08); margin: 0 -1rem; padding: 1.25rem 1rem; border-radius: 4px; }
 .dispatch-meta { font-family: var(--font-mono); font-size: 12px; color: var(--gold-dark); text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 0.35rem; }
 .dispatch-title { font-size: 18px; font-weight: 600; margin: 0 0 0.2rem; }
 .dispatch-title a { color: var(--ink-text); text-decoration: none; border-bottom: 1px solid var(--gold); }
 .dispatch-title a:hover { color: var(--gold-dark); }
 .dispatch-company { font-size: 14px; color: var(--muted); margin: 0 0 0.5rem; }
 .dispatch-desc { font-size: 14px; line-height: 1.55; margin: 0 0 0.5rem; color: #4a4433; }
-.dispatch-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.dispatch-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
 .tag { font-family: var(--font-mono); font-size: 11px; padding: 0.2rem 0.55rem; border: 1px solid var(--border-hair); border-radius: 2px; color: var(--muted); text-transform: uppercase; }
 .tag.salary { color: var(--red); border-color: var(--red); }
+.tag.our-jobs { color: var(--ink); background: var(--gold); border-color: var(--gold); font-weight: 600; }
+.apply-btn { font-family: var(--font-body); font-size: 13px; font-weight: 600; padding: 0.4rem 1rem; border-radius: 3px; border: none; background: var(--ink); color: var(--cream-text); cursor: pointer; margin-left: auto; }
+.apply-btn:hover { background: var(--ink-2); }
 .resume-section { background: var(--ink); color: var(--cream-text); margin-top: 3rem; padding: 3.5rem 1.5rem; }
 .resume-inner { max-width: 640px; margin: 0 auto; }
 .resume-section .section-title { color: var(--cream-text); }
@@ -78,13 +82,156 @@ main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
 .resume-form input { font-family: var(--font-body); font-size: 15px; padding: 0.7rem 0.8rem; border: 1px solid var(--border-hair-dark); border-radius: 3px; background: var(--ink-2); color: var(--cream-text); }
 .resume-form input::placeholder { color: var(--muted-dark); }
 .resume-form input[type="file"] { padding: 0.5rem; }
-#submitBtn { margin-top: 0.5rem; align-self: flex-start; background: var(--gold); color: #241703; border: none; font-family: var(--font-body); font-weight: 600; font-size: 15px; padding: 0.8rem 1.75rem; border-radius: 3px; cursor: pointer; }
-#submitBtn:hover { background: #D89A4D; }
-#submitBtn:disabled { opacity: 0.6; cursor: default; }
+.checkbox-row { flex-direction: row !important; align-items: flex-start; gap: 0.6rem !important; font-family: var(--font-body) !important; font-size: 13px !important; text-transform: none !important; letter-spacing: 0 !important; color: var(--cream-text) !important; line-height: 1.5; }
+.checkbox-row input[type="checkbox"] { width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; accent-color: var(--gold); }
+#submitBtn, .modal-submit { margin-top: 0.5rem; align-self: flex-start; background: var(--gold); color: #241703; border: none; font-family: var(--font-body); font-weight: 600; font-size: 15px; padding: 0.8rem 1.75rem; border-radius: 3px; cursor: pointer; }
+#submitBtn:hover, .modal-submit:hover { background: #D89A4D; }
+#submitBtn:disabled, .modal-submit:disabled { opacity: 0.6; cursor: default; }
 .form-status { font-family: var(--font-mono); font-size: 13px; color: var(--gold); min-height: 1.2em; margin: 0; }
 .form-status.error { color: #E28A82; }
 .site-footer { background: var(--ink); color: var(--muted-dark); text-align: center; font-size: 12px; padding: 1.5rem; border-top: 1px solid var(--border-hair-dark); }
-@media (max-width: 600px) { .hero-stats { gap: 1.5rem; } .controls { flex-direction: column; align-items: stretch; } .result-count { margin-left: 0; } }
+
+/* ---------- Apply modal ---------- */
+.modal-overlay { position: fixed; inset: 0; background: rgba(16, 25, 42, 0.75); display: none; align-items: center; justify-content: center; padding: 1.5rem; z-index: 100; }
+.modal-overlay.open { display: flex; }
+.modal-card { background: var(--paper); color: var(--ink-text); max-width: 480px; width: 100%; border-radius: 6px; padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
+.modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 22px; line-height: 1; cursor: pointer; color: var(--muted); }
+.modal-card .dateline { color: var(--gold-dark); }
+.modal-card h3 { font-family: var(--font-display); font-weight: 800; font-size: 1.6rem; text-transform: uppercase; margin: 0.2rem 0 1rem; }
+.modal-form { display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; }
+.modal-form label { display: flex; flex-direction: column; gap: 0.35rem; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.modal-form input { font-family: var(--font-body); font-size: 15px; padding: 0.65rem 0.75rem; border: 1px solid var(--border-hair); border-radius: 3px; background: var(--paper-2); color: var(--ink-text); }
+
+@media (max-width: 600px) {
+  .hero-stats { gap: 1.5rem; }
+  .controls { flex-direction: column; align-items: stretch; }
+  .result-count { margin-left: 0; }
+  .dispatch-tags { flex-wrap: wrap; }
+  .apply-btn { margin-left: 0; margin-top: 0.5rem; width: 100%; }
+}
+
+/* ---------- Resume Toolkit: floating launcher + slide-out drawer ---------- */
+.toolkit-launcher {
+  position: fixed;
+  left: 24px;
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--ink);
+  color: var(--cream-text);
+  border: 1px solid var(--gold);
+  border-radius: 999px;
+  padding: 0.7rem 1.25rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.toolkit-launcher-1 { bottom: 24px; }
+.toolkit-launcher-2 { bottom: 82px; }
+.toolkit-launcher-3 { bottom: 140px; }
+.toolkit-launcher:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+.toolkit-launcher-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); flex-shrink: 0; box-shadow: 0 0 0 0 rgba(198,138,61,0.6); animation: toolkit-pulse 2.2s infinite; }
+@keyframes toolkit-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(198,138,61,0.55); }
+  70% { box-shadow: 0 0 0 8px rgba(198,138,61,0); }
+  100% { box-shadow: 0 0 0 0 rgba(198,138,61,0); }
+}
+@media (max-width: 600px) {
+  .toolkit-launcher { left: 12px; padding: 0.55rem 0.9rem; font-size: 12px; }
+  .toolkit-launcher-1 { bottom: 12px; }
+  .toolkit-launcher-2 { bottom: 62px; }
+  .toolkit-launcher-3 { bottom: 112px; }
+}
+
+.toolkit-drawer-backdrop {
+  position: fixed; inset: 0; background: rgba(16,25,42,0.55);
+  z-index: 190; display: none;
+}
+.toolkit-drawer-backdrop.open { display: block; }
+
+.toolkit-drawer {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: min(480px, 92vw);
+  background: var(--paper);
+  z-index: 200;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  box-shadow: 4px 0 24px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+}
+.toolkit-drawer.open { transform: translateX(0); }
+.toolkit-drawer-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  background: var(--ink); color: var(--cream-text);
+  padding: 1.5rem 1.5rem 1.25rem;
+  flex-shrink: 0;
+}
+.toolkit-drawer-header .section-title { color: var(--cream-text); font-size: 1.5rem; }
+.toolkit-drawer-close { background: none; border: none; color: var(--cream-text); font-size: 26px; line-height: 1; cursor: pointer; padding: 0 0 0 1rem; }
+.toolkit-drawer-body { padding: 1.25rem; overflow-y: auto; flex: 1; }
+.toolkit-intro-text { color: var(--muted); font-size: 13px; line-height: 1.6; margin: 0 0 1.25rem; }
+.widget-card { background: var(--paper-2); border-radius: 6px; padding: 1.25rem; margin-bottom: 1.25rem; }
+.widget-title { font-family: var(--font-display); font-weight: 800; font-size: 1.3rem; text-transform: uppercase; margin: 0 0 0.3rem; }
+.widget-note { font-size: 13px; color: var(--muted); margin: 0 0 1rem; line-height: 1.5; }
+
+.tk-label { display: flex; flex-direction: column; gap: 0.35rem; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.85rem; }
+.tk-label:last-child { margin-bottom: 0; }
+.tk-optional { text-transform: none; letter-spacing: 0; opacity: 0.85; }
+.tk-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+@media (max-width: 500px) { .tk-row-2 { grid-template-columns: 1fr; } }
+.widget-card input, .widget-card textarea { font-family: var(--font-body); font-size: 14px; padding: 0.6rem 0.7rem; border: 1px solid var(--border-hair); border-radius: 3px; background: #fff; color: var(--ink-text); resize: vertical; width: 100%; }
+.widget-card textarea { min-height: 65px; }
+
+.tk-entry { border: 1px solid var(--border-hair); border-radius: 4px; padding: 0.85rem; margin-bottom: 0.7rem; position: relative; }
+.tk-entry .tk-remove { position: absolute; top: 0.5rem; right: 0.5rem; background: none; border: none; color: var(--red); font-size: 12px; cursor: pointer; font-family: var(--font-mono); }
+.tk-bullet-row { display: flex; gap: 0.4rem; margin-bottom: 0.4rem; }
+.tk-bullet-row input { flex: 1; }
+.tk-small-btn { font-family: var(--font-body); font-size: 12px; font-weight: 600; padding: 0.3rem 0.6rem; border-radius: 3px; border: 1px solid var(--border-hair); background: #fff; cursor: pointer; flex-shrink: 0; }
+.tk-small-btn.danger { color: var(--red); border-color: var(--red); }
+.tk-add-btn { font-family: var(--font-body); font-size: 12px; font-weight: 600; padding: 0.4rem 0.75rem; border-radius: 3px; border: none; background: var(--ink); color: var(--cream-text); cursor: pointer; }
+
+.primary-btn { font-family: var(--font-body); font-weight: 600; font-size: 14px; padding: 0.65rem 1.3rem; border-radius: 3px; border: none; background: var(--gold); color: #241703; cursor: pointer; }
+.primary-btn:hover { background: #D89A4D; }
+.primary-btn:disabled { opacity: 0.5; cursor: default; }
+.toolkit-drawer .checkbox-row { color: var(--ink-text) !important; }
+.ghost-btn { font-family: var(--font-body); font-weight: 600; font-size: 14px; padding: 0.65rem 1.3rem; border-radius: 3px; border: 1px solid var(--ink-text); background: transparent; color: var(--ink-text); cursor: pointer; }
+.ghost-btn:hover { background: var(--ink); color: var(--cream-text); }
+
+#tkPreview { background: #fff; border: 1px solid var(--border-hair); border-radius: 4px; padding: 1.5rem; font-family: Georgia, 'Times New Roman', serif; color: #1a1a1a; font-size: 12.5px; line-height: 1.5; max-height: 520px; overflow-y: auto; }
+#tkPreview.accent-navy .prev-name { color: #10192A; }
+#tkPreview.accent-navy .prev-h2 { border-color: #10192A; color: #10192A; }
+#tkPreview.accent-gold .prev-name { color: #8F5F24; }
+#tkPreview.accent-gold .prev-h2 { border-color: #C68A3D; color: #8F5F24; }
+#tkPreview .prev-name { font-size: 20px; font-weight: bold; margin: 0 0 2px; }
+#tkPreview .prev-contact { font-size: 11px; color: #444; margin: 0 0 12px; }
+#tkPreview .prev-h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1.5px solid #333; padding-bottom: 2px; margin: 14px 0 6px; }
+#tkPreview .prev-h2:first-of-type { margin-top: 0; }
+#tkPreview .prev-entry-title { font-weight: bold; margin: 6px 0 0; }
+#tkPreview .prev-entry-sub { font-style: italic; color: #444; margin: 0 0 3px; font-size: 11px; }
+#tkPreview .prev-bullets { margin: 0 0 5px 16px; padding: 0; }
+#tkPreview .prev-bullets li { margin-bottom: 2px; }
+#tkPreview .prev-empty { color: #999; font-style: italic; }
+
+.match-score-bar { height: 20px; border-radius: 4px; background: var(--border-hair); overflow: hidden; margin: 0.7rem 0; }
+.match-score-fill { height: 100%; background: var(--gold); display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: #241703; transition: width 0.4s ease; }
+.tk-keyword-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.75rem; }
+@media (max-width: 500px) { .tk-keyword-cols { grid-template-columns: 1fr; } }
+.tk-kw-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.tk-kw-tag { font-family: var(--font-mono); font-size: 11px; padding: 0.2rem 0.5rem; border-radius: 3px; }
+.tk-kw-tag.matched { background: rgba(63, 107, 74, 0.15); color: #3F6B4A; border: 1px solid #3F6B4A; }
+.tk-kw-tag.missing { background: rgba(139, 49, 40, 0.1); color: var(--red); border: 1px solid var(--red); }
+
+.tk-rewrite-option { background: #fff; border: 1px solid var(--border-hair); border-radius: 4px; padding: 0.7rem; margin-bottom: 0.5rem; font-size: 13px; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; }
+
+.tk-btn-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.75rem; }
+.tk-status { font-family: var(--font-mono); font-size: 12px; color: var(--gold-dark); min-height: 1.2em; margin: 0.5rem 0 0; }
+.tk-status.error { color: var(--red); }
 </style>
 </head>
 <body>
@@ -99,7 +246,7 @@ main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
   <div class="hero-inner">
     <p class="dateline" id="dateline">TEXAS, USA — WIRE SERVICE</p>
     <h1 class="hero-title">TX JOB<br>WIRE</h1>
-    <p class="hero-sub">Every job on this page is located in a Texas city, posted within the last 20 days, and pulled automatically. No manual curation, no stale listings.</p>
+    <p class="hero-sub">Every job on this page is a tech role located in a Texas city, posted within the last 20 days, and pulled automatically. No general/non-tech listings, no manual curation, no stale postings.</p>
     <div class="hero-stats" id="heroStats">
       <div class="stat"><span class="stat-value" id="statCount">&mdash;</span><span class="stat-label">open dispatches</span></div>
       <div class="stat"><span class="stat-value" id="statCities">&mdash;</span><span class="stat-label">cities covered</span></div>
@@ -134,22 +281,30 @@ main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
       <p class="dateline">WESTERN UNION OF CAREERS</p>
       <h2 class="section-title">File your resume</h2>
       <p class="resume-copy">
-        Submit your resume to get notified by email whenever a Texas job
-        matching your profile comes through the feed &mdash; no need to
-        check the site yourself every day.
+        Submit your resume to get notified by email whenever a Texas
+        tech job matching your profile comes through the feed &mdash;
+        no need to check the site yourself every day.
       </p>
       <p class="resume-copy resume-note">
         <strong>Where this stands today:</strong> matching is launching
         soon, about a week out. Submit now and you'll be on the list
         from day one &mdash; we'll email you as soon as it's live.
       </p>
+      <p class="resume-copy">
+        Don't have a polished resume yet? Look for the
+        <strong style="color: var(--gold);">Resume Toolkit</strong> button in the corner of your screen
+        &mdash; build one, tighten your bullets, and tailor it to a job, all free.
+      </p>
 
       <form id="resumeForm" class="resume-form">
         <label>Full name<input type="text" name="fullName" required autocomplete="name"></label>
+        <label>Mobile number<input type="tel" name="mobileNumber" required autocomplete="tel"></label>
         <label>Email address<input type="email" name="email" required autocomplete="email"></label>
-        <label>Preferred Texas city <span class="optional">(optional)</span><input type="text" name="preferredCity" placeholder="e.g. Austin, or leave blank for anywhere in TX"></label>
-        <label>Roles or keywords you're targeting <span class="optional">(optional)</span><input type="text" name="keywords" placeholder="e.g. machine learning engineer, data analyst"></label>
+        <label>Current location<input type="text" name="currentLocation" required placeholder="e.g. Austin, TX"></label>
+        <label>Job alert keywords <span class="optional">(optional, up to 3 — once alerts launch, these are what we'll match you against)</span><input type="text" name="keywords" placeholder="e.g. machine learning engineer, data analyst"></label>
+        <label>Know someone who should apply too? <span class="optional">(optional, their email)</span><input type="email" name="referral" placeholder="friend@example.com"></label>
         <label>Resume file <span class="optional">(PDF or Word, under 5MB)</span><input type="file" name="resumeFile" id="resumeFile" accept=".pdf,.doc,.docx" required></label>
+        <label class="checkbox-row"><input type="checkbox" name="consent" required>I agree to be part of Serigor Innovations' Talent Repository, so my resume can be considered for current and future roles.</label>
         <button type="submit" id="submitBtn">Submit resume</button>
         <p class="form-status" id="formStatus" role="status"></p>
       </form>
@@ -158,14 +313,126 @@ main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
 </main>
 
 <footer class="site-footer">
-  <p>TX Job Wire &mdash; sources: Adzuna, USAJobs. Not affiliated with any employer listed. Job data refreshes every 10 hours via Google Apps Script.</p>
+  <p>TX Job Wire &mdash; sources: Adzuna, USAJobs, and our own hiring team. Job data refreshes every 10 hours.</p>
 </footer>
+
+<!-- ============ THREE INDEPENDENT FLOATING RESUME WIDGETS ============ -->
+
+<!-- Widget 1: Free Resume Review -->
+<button type="button" class="toolkit-launcher toolkit-launcher-1" id="improveLauncher">
+  <span class="toolkit-launcher-dot"></span> Free Resume Review
+</button>
+<div class="toolkit-drawer-backdrop" id="improveDrawerBackdrop"></div>
+<aside class="toolkit-drawer" id="improveDrawer">
+  <div class="toolkit-drawer-header">
+    <div>
+      <p class="dateline" style="margin:0 0 0.2rem;">AI-POWERED — FREE TO USE</p>
+      <h2 class="section-title" style="margin:0;">Free Resume Review</h2>
+    </div>
+    <button type="button" class="toolkit-drawer-close" id="improveDrawerClose" aria-label="Close">&times;</button>
+  </div>
+  <div class="toolkit-drawer-body">
+    <div class="widget-card">
+      <p class="widget-note">Upload your resume to get a quick scan for missing sections, missing contact info, length issues, and weak bullets.</p>
+      <label class="checkbox-row" style="margin-bottom:0.85rem;"><input type="checkbox" id="improveConsent">I agree to be part of Serigor Innovations' Talent Repository, so my resume can be considered for current and future roles.</label>
+      <input type="file" id="improveFile" accept=".pdf,.doc,.docx">
+      <button type="button" class="primary-btn" id="improveUploadBtn" style="margin-top:0.75rem;" disabled>Upload &amp; analyze</button>
+      <p class="tk-status" id="improveStatus" role="status"></p>
+    </div>
+    <div class="widget-card" id="improveOutputCard" style="display:none;">
+      <h3 class="widget-title">Suggestions</h3>
+      <div id="tkImproveOutput"></div>
+    </div>
+  </div>
+</aside>
+
+<!-- Widget 2: Improve Your Resume -->
+<button type="button" class="toolkit-launcher toolkit-launcher-2" id="tightenLauncher">
+  <span class="toolkit-launcher-dot"></span> Improve Your Resume
+</button>
+<div class="toolkit-drawer-backdrop" id="tightenDrawerBackdrop"></div>
+<aside class="toolkit-drawer" id="tightenDrawer">
+  <div class="toolkit-drawer-header">
+    <div>
+      <p class="dateline" style="margin:0 0 0.2rem;">AI-POWERED — FREE TO USE</p>
+      <h2 class="section-title" style="margin:0;">Improve Your Resume</h2>
+    </div>
+    <button type="button" class="toolkit-drawer-close" id="tightenDrawerClose" aria-label="Close">&times;</button>
+  </div>
+  <div class="toolkit-drawer-body">
+    <div class="widget-card">
+      <p class="widget-note">Upload your resume to auto-scan its bullet points for passive phrasing and missing metrics.</p>
+      <label class="checkbox-row" style="margin-bottom:0.85rem;"><input type="checkbox" id="tightenConsent">I agree to be part of Serigor Innovations' Talent Repository, so my resume can be considered for current and future roles.</label>
+      <input type="file" id="tightenFile" accept=".pdf,.doc,.docx">
+      <button type="button" class="primary-btn" id="tightenUploadBtn" style="margin-top:0.75rem;" disabled>Upload &amp; scan</button>
+      <p class="tk-status" id="tightenStatus" role="status"></p>
+    </div>
+    <div class="widget-card" id="tightenOutputCard" style="display:none;">
+      <h3 class="widget-title">Bullets detected</h3>
+      <button type="button" class="primary-btn" id="tkTightenBtn">Scan my bullets</button>
+      <div id="tkTightenOutput" style="margin-top:0.75rem;"></div>
+      <p class="widget-note" style="margin-top:1rem;">Or paste one bullet directly:</p>
+      <label class="tk-label">Bullet to improve<textarea id="tkBulletInput"></textarea></label>
+      <button type="button" class="primary-btn" id="tkRewriteBtn">Get suggestions</button>
+      <div id="tkRewriteOutput" style="margin-top:0.75rem;"></div>
+    </div>
+  </div>
+</aside>
+
+<!-- Widget 3: Tailor To A Job -->
+<button type="button" class="toolkit-launcher toolkit-launcher-3" id="tailorLauncher">
+  <span class="toolkit-launcher-dot"></span> Tailor To A Job
+</button>
+<div class="toolkit-drawer-backdrop" id="tailorDrawerBackdrop"></div>
+<aside class="toolkit-drawer" id="tailorDrawer">
+  <div class="toolkit-drawer-header">
+    <div>
+      <p class="dateline" style="margin:0 0 0.2rem;">AI-POWERED — FREE TO USE</p>
+      <h2 class="section-title" style="margin:0;">Tailor To A Job</h2>
+    </div>
+    <button type="button" class="toolkit-drawer-close" id="tailorDrawerClose" aria-label="Close">&times;</button>
+  </div>
+  <div class="toolkit-drawer-body">
+    <div class="widget-card">
+      <p class="widget-note">Upload your resume, then paste a job description to check keyword overlap.</p>
+      <label class="checkbox-row" style="margin-bottom:0.85rem;"><input type="checkbox" id="tailorConsent">I agree to be part of Serigor Innovations' Talent Repository, so my resume can be considered for current and future roles.</label>
+      <input type="file" id="tailorFile" accept=".pdf,.doc,.docx">
+      <button type="button" class="primary-btn" id="tailorUploadBtn" style="margin-top:0.75rem;" disabled>Upload resume</button>
+      <p class="tk-status" id="tailorStatus" role="status"></p>
+    </div>
+    <div class="widget-card" id="tailorOutputCard" style="display:none;">
+      <h3 class="widget-title">Job description</h3>
+      <label class="tk-label">Paste it here<textarea id="tkJdInput" style="min-height:80px;"></textarea></label>
+      <button type="button" class="primary-btn" id="tkMatchBtn">Get tailored resume</button>
+      <div id="tkMatchResult"></div>
+    </div>
+  </div>
+</aside>
+
+<!-- Apply modal for internal ("Our Jobs") postings -->
+<div class="modal-overlay" id="applyModalOverlay">
+  <div class="modal-card">
+    <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+    <p class="dateline">APPLY DIRECTLY</p>
+    <h3 id="modalJobTitle">Job title</h3>
+    <form id="applyForm" class="modal-form">
+      <input type="hidden" name="jobId" id="applyJobId">
+      <input type="hidden" name="jobTitle" id="applyJobTitle">
+      <label>Full name<input type="text" name="fullName" required autocomplete="name"></label>
+      <label>Email address<input type="email" name="email" required autocomplete="email"></label>
+      <label>Phone number<input type="tel" name="phone" required autocomplete="tel"></label>
+      <label>Resume file <span class="optional">(PDF or Word, under 5MB)</span><input type="file" name="resumeFile" id="applyResumeFile" accept=".pdf,.doc,.docx" required></label>
+      <button type="submit" class="modal-submit" id="applySubmitBtn">Submit application</button>
+      <p class="form-status" id="applyFormStatus" role="status"></p>
+    </form>
+  </div>
+</div>
 
 <script>
 // ---- Configuration ----
-// Paste the Web App URL you get after deploying Code.gs (Deploy > New
-// deployment > Web app > Execute as: Me, Who has access: Anyone).
-// This single URL is used both to fetch jobs (GET) and submit resumes (POST).
+// Paste the Web App URL from deploying Code.gs as a Web App.
+// Used for: fetching the feed (GET), the general resume form (POST),
+// and the per-job apply form (POST).
 const GAS_URL = "https://script.google.com/macros/s/AKfycbzC7SkK7uMkIv3_NaBeDsdSUEY0InrHhTGIZy1j6dtE3xhA9wW4fsvQR0TZdXd4SF2O/exec";
 
 const REFRESH_HOURS = 10;
@@ -255,18 +522,31 @@ function renderDispatches(jobs) {
 
   countEl.textContent = `${jobs.length} shown`;
 
-  list.innerHTML = jobs.map(job => `
-    <li class="dispatch">
+  list.innerHTML = jobs.map(job => {
+    const isInternal = !!job.is_internal;
+    const linkOrButton = isInternal
+      ? escapeHtml(job.title || "Untitled role")
+      : `<a href="${escapeAttr(job.url || '#')}" target="_blank" rel="noopener noreferrer">${escapeHtml(job.title || "Untitled role")}</a>`;
+
+    return `
+    <li class="dispatch${isInternal ? ' internal' : ''}">
       <p class="dispatch-meta">${escapeHtml(job.city || "TX")}, TX \u2014 ${job.days_old != null ? job.days_old + "d old" : ""} \u2014 ${escapeHtml(job.source || "")}</p>
-      <h3 class="dispatch-title"><a href="${escapeAttr(job.url || '#')}" target="_blank" rel="noopener noreferrer">${escapeHtml(job.title || "Untitled role")}</a></h3>
+      <h3 class="dispatch-title">${linkOrButton}</h3>
       <p class="dispatch-company">${escapeHtml(job.company || "Undisclosed employer")}</p>
       ${job.description ? `<p class="dispatch-desc">${escapeHtml(job.description)}${job.description.length >= 280 ? "\u2026" : ""}</p>` : ""}
       <div class="dispatch-tags">
+        ${isInternal ? `<span class="tag our-jobs">Our Jobs</span>` : ""}
         ${job.salary ? `<span class="tag salary">${escapeHtml(job.salary)}</span>` : ""}
         <span class="tag">${escapeHtml(job.posted_date || "")}</span>
+        ${isInternal ? `<button class="apply-btn" data-job-id="${escapeAttr(job.id)}" data-job-title="${escapeAttr(job.title)}">Apply now</button>` : ""}
       </div>
     </li>
-  `).join("");
+  `;
+  }).join("");
+
+  list.querySelectorAll(".apply-btn").forEach(btn => {
+    btn.addEventListener("click", () => openApplyModal(btn.dataset.jobId, btn.dataset.jobTitle));
+  });
 }
 
 function applyFilters() {
@@ -295,7 +575,7 @@ document.getElementById("searchInput").addEventListener("input", applyFilters);
 document.getElementById("cityFilter").addEventListener("change", applyFilters);
 document.getElementById("sourceFilter").addEventListener("change", applyFilters);
 
-// ---- Resume form submission ----
+// ---- General resume form submission ----
 const resumeForm = document.getElementById("resumeForm");
 const formStatus = document.getElementById("formStatus");
 const submitBtn = document.getElementById("submitBtn");
@@ -325,20 +605,19 @@ resumeForm.addEventListener("submit", async (e) => {
   try {
     const base64 = await fileToBase64(file);
     const payload = new FormData();
+    payload.append("formType", "resume");
     payload.append("fullName", resumeForm.fullName.value);
+    payload.append("mobileNumber", resumeForm.mobileNumber.value);
     payload.append("email", resumeForm.email.value);
-    payload.append("preferredCity", resumeForm.preferredCity.value);
+    payload.append("currentLocation", resumeForm.currentLocation.value);
     payload.append("keywords", resumeForm.keywords.value);
+    payload.append("referral", resumeForm.referral.value);
+    payload.append("consent", resumeForm.consent.checked ? "yes" : "no");
     payload.append("fileName", file.name);
     payload.append("mimeType", file.type || "application/octet-stream");
     payload.append("resumeData", base64);
     payload.append("submittedAt", new Date().toISOString());
 
-    // Apps Script web apps redirect through googleusercontent.com, which
-    // usually strips CORS headers on the redirected response even though
-    // the POST itself succeeds server-side. We fire the request and treat
-    // it as submitted once it settles, rather than depending on reading
-    // the response body.
     await fetch(GAS_URL, { method: "POST", body: payload }).catch(() => null);
 
     formStatus.textContent = "Resume received. We'll email you once matching jobs come through the feed.";
@@ -352,6 +631,71 @@ resumeForm.addEventListener("submit", async (e) => {
   }
 });
 
+// ---- Apply modal (per-job application for internal postings) ----
+const applyModalOverlay = document.getElementById("applyModalOverlay");
+const applyForm = document.getElementById("applyForm");
+const applyFormStatus = document.getElementById("applyFormStatus");
+const applySubmitBtn = document.getElementById("applySubmitBtn");
+
+function openApplyModal(jobId, jobTitle) {
+  document.getElementById("applyJobId").value = jobId;
+  document.getElementById("applyJobTitle").value = jobTitle;
+  document.getElementById("modalJobTitle").textContent = jobTitle;
+  applyForm.reset();
+  document.getElementById("applyJobId").value = jobId;
+  document.getElementById("applyJobTitle").value = jobTitle;
+  applyFormStatus.textContent = "";
+  applyFormStatus.classList.remove("error");
+  applyModalOverlay.classList.add("open");
+}
+function closeApplyModal() { applyModalOverlay.classList.remove("open"); }
+
+document.getElementById("modalClose").addEventListener("click", closeApplyModal);
+applyModalOverlay.addEventListener("click", (e) => { if (e.target === applyModalOverlay) closeApplyModal(); });
+
+applyForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const fileInput = document.getElementById("applyResumeFile");
+  const file = fileInput.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    applyFormStatus.textContent = "That file is over 5MB. Please upload a smaller file.";
+    applyFormStatus.classList.add("error");
+    return;
+  }
+
+  applySubmitBtn.disabled = true;
+  applyFormStatus.classList.remove("error");
+  applyFormStatus.textContent = "Submitting\u2026";
+
+  try {
+    const base64 = await fileToBase64(file);
+    const payload = new FormData();
+    payload.append("formType", "applyJob");
+    payload.append("jobId", applyForm.jobId.value);
+    payload.append("jobTitle", applyForm.jobTitle.value);
+    payload.append("fullName", applyForm.fullName.value);
+    payload.append("email", applyForm.email.value);
+    payload.append("phone", applyForm.phone.value);
+    payload.append("fileName", file.name);
+    payload.append("mimeType", file.type || "application/octet-stream");
+    payload.append("resumeData", base64);
+    payload.append("submittedAt", new Date().toISOString());
+
+    await fetch(GAS_URL, { method: "POST", body: payload }).catch(() => null);
+
+    applyFormStatus.textContent = "Application submitted. You'll hear back if there's a fit.";
+    setTimeout(closeApplyModal, 1800);
+  } catch (err) {
+    console.error(err);
+    applyFormStatus.textContent = "Something went wrong. Try again or use a different file.";
+    applyFormStatus.classList.add("error");
+  } finally {
+    applySubmitBtn.disabled = false;
+  }
+});
+
 function fileToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -362,6 +706,500 @@ function fileToBase64(file) {
 }
 
 loadJobs();
+
+// =====================================================================
+// =====================================================================
+// RESUME TOOLKIT — three independent widgets, each with its own
+// consent gate + upload. Every upload is saved to Drive and logged in
+// the Resumes sheet (de-duplicated by the email found in the resume
+// text), same as any other resume submission. Analysis itself is
+// rule-based, done client-side once the text comes back.
+// =====================================================================
+
+function tkFileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(",")[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// Generic wiring shared by all three widgets: launcher/drawer open-close,
+// consent checkbox gating the upload button, and the upload-and-log flow.
+// `onReady(text)` is called once the resume is parsed and logged.
+function setupResumeWidget(opts) {
+  const launcher = document.getElementById(opts.launcherId);
+  const drawer = document.getElementById(opts.drawerId);
+  const backdrop = document.getElementById(opts.backdropId);
+  const closeBtn = document.getElementById(opts.closeId);
+  const consent = document.getElementById(opts.consentId);
+  const fileInput = document.getElementById(opts.fileId);
+  const uploadBtn = document.getElementById(opts.uploadBtnId);
+  const statusEl = document.getElementById(opts.statusId);
+  const outputCard = document.getElementById(opts.outputCardId);
+
+  function open() { drawer.classList.add("open"); backdrop.classList.add("open"); }
+  function close() { drawer.classList.remove("open"); backdrop.classList.remove("open"); }
+
+  launcher.addEventListener("click", open);
+  closeBtn.addEventListener("click", close);
+  backdrop.addEventListener("click", close);
+
+  consent.addEventListener("change", () => { uploadBtn.disabled = !consent.checked; });
+
+  uploadBtn.addEventListener("click", async () => {
+    statusEl.classList.remove("error");
+    const file = fileInput.files[0];
+
+    if (!consent.checked) {
+      statusEl.textContent = "Please check the consent box first.";
+      statusEl.classList.add("error");
+      return;
+    }
+    if (!file) {
+      statusEl.textContent = "Choose a file first.";
+      statusEl.classList.add("error");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      statusEl.textContent = "That file is over 5MB. Try a smaller file.";
+      statusEl.classList.add("error");
+      return;
+    }
+    if (GAS_URL.includes("PASTE_YOUR")) {
+      statusEl.textContent = "This isn't connected yet — the site owner needs to add the Apps Script URL.";
+      statusEl.classList.add("error");
+      return;
+    }
+
+    uploadBtn.disabled = true;
+    statusEl.textContent = "Uploading and reading your resume\u2026";
+
+    try {
+      const base64 = await tkFileToBase64(file);
+      const payload = new FormData();
+      payload.append("formType", "parseResume");
+      payload.append("consent", "yes");
+      payload.append("fileName", file.name);
+      payload.append("mimeType", file.type || "application/octet-stream");
+      payload.append("fileData", base64);
+
+      const res = await fetch(GAS_URL, { method: "POST", body: payload });
+      const data = await res.json();
+
+      if (data.status !== "ok") {
+        statusEl.textContent = data.message || "Couldn't read that file.";
+        statusEl.classList.add("error");
+        uploadBtn.disabled = false;
+        return;
+      }
+
+      statusEl.textContent = "";
+      outputCard.style.display = "block";
+      opts.onReady(data.text, data.savedEmail || "");
+    } catch (err) {
+      console.error(err);
+      statusEl.textContent = "Couldn't reach the server, or the response couldn't be read. Try again.";
+      statusEl.classList.add("error");
+      uploadBtn.disabled = false;
+    }
+  });
+}
+
+// ---- Shared bullet-rewrite heuristics ----
+const TK_WEAK_STARTERS = /^\s*(responsible for|duties included|worked on|helped with|assisted with|in charge of|tasked with)\s*/i;
+const TK_VERB_HINTS = [
+  { pattern: /manag|lead|oversaw|supervis/i, verbs: ["Led", "Managed", "Oversaw"] },
+  { pattern: /build|built|creat|develop|design/i, verbs: ["Built", "Designed", "Developed"] },
+  { pattern: /reduc|decreas|cut|lower/i, verbs: ["Reduced", "Cut", "Streamlined"] },
+  { pattern: /increas|improv|boost|grow|grew/i, verbs: ["Increased", "Improved", "Drove"] },
+  { pattern: /launch|deploy|ship|releas/i, verbs: ["Launched", "Shipped", "Deployed"] },
+];
+const TK_DEFAULT_VERBS = ["Led", "Owned", "Drove", "Delivered"];
+
+function tkRewriteBullet(input) {
+  let stripped = input.replace(TK_WEAK_STARTERS, "").trim();
+  if (stripped) stripped = stripped.charAt(0).toLowerCase() + stripped.slice(1);
+
+  let verbOptions = TK_DEFAULT_VERBS;
+  for (const hint of TK_VERB_HINTS) {
+    if (hint.pattern.test(input)) { verbOptions = hint.verbs; break; }
+  }
+
+  const hasMetric = /\d|%|\$/.test(input);
+  const metricNote = hasMetric ? "" : " [add a number, % or $ impact here]";
+  return verbOptions.slice(0, 2).map(verb => `${verb} ${stripped}${metricNote}`);
+}
+
+function tkRenderCopyableList(container, items) {
+  container.innerHTML = items.map(v => `
+    <div class="tk-rewrite-option">
+      <span>${escapeHtml(v)}</span>
+      <button type="button" class="tk-small-btn tk-copy-btn" data-copy="${escapeHtml(v)}">Copy</button>
+    </div>
+  `).join("");
+  container.querySelectorAll(".tk-copy-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      navigator.clipboard.writeText(btn.dataset.copy);
+      btn.textContent = "Copied!";
+      setTimeout(() => { btn.textContent = "Copy"; }, 1500);
+    });
+  });
+}
+
+// Heuristic bullet extraction — catches common bullet markers plus
+// reasonably short capitalized lines. Resume formats vary a lot, so
+// this can miss some bullets or catch a stray line — a starting point.
+function tkExtractBullets(text) {
+  const lines = (text || "").split("\n").map(l => l.trim()).filter(Boolean);
+  const bulletLines = lines.filter(l =>
+    /^[-•*\u2022\u25CF\u2023]\s+/.test(l) ||
+    (l.length > 20 && l.length < 220 && /^[A-Z]/.test(l) && !/:$/.test(l))
+  );
+  const cleaned = bulletLines.map(l => l.replace(/^[-•*\u2022\u25CF\u2023]\s+/, "").trim());
+  return [...new Set(cleaned)].slice(0, 40);
+}
+
+// Provider info is intentionally not shown to candidates — this stays
+// as a no-op so every call site elsewhere in the file doesn't need to
+// be touched individually.
+function tkProviderBadge(provider) {
+  return "";
+}
+
+// ---- Widget 1: Free Resume Review ----
+let improveResumeText = "";
+let improveEmail = "";
+
+function tkAnalyzeResumeText(text) {
+  const tips = [];
+  const t = text || "";
+  const wordCount = t.trim().split(/\s+/).filter(Boolean).length;
+
+  if (wordCount > 0 && wordCount < 150) {
+    tips.push(`Your resume looks short (${wordCount} words). Consider adding more detail on your experience and achievements.`);
+  } else if (wordCount > 1200) {
+    tips.push(`Your resume is on the longer side (${wordCount} words). Recruiters often skim — consider trimming to the most relevant experience.`);
+  }
+
+  const hasEmail = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(t);
+  if (!hasEmail) tips.push("We couldn't find an email address — make sure your contact info is clearly visible near the top.");
+
+  const hasPhone = /(\+?\d[\d\-\s().]{7,}\d)/.test(t);
+  if (!hasPhone) tips.push("We couldn't find a phone number — add one so employers can reach you directly.");
+
+  const lower = t.toLowerCase();
+  if (!/experience|employment history|work history/.test(lower)) {
+    tips.push('We didn\'t spot a clear "Experience" section — a labeled header helps both recruiters and applicant tracking systems find it fast.');
+  }
+  if (!/skills/.test(lower)) {
+    tips.push('Consider adding a dedicated "Skills" section.');
+  }
+  if (!/education/.test(lower)) {
+    tips.push('We didn\'t spot an "Education" section — even a brief one is worth including.');
+  }
+
+  const bullets = tkExtractBullets(t);
+  if (bullets.length) {
+    const weakCount = bullets.filter(b => TK_WEAK_STARTERS.test(b)).length;
+    const noMetricCount = bullets.filter(b => !/\d|%|\$/.test(b)).length;
+    if (weakCount > 0) tips.push(`${weakCount} of ${bullets.length} detected bullet points start with passive phrasing like "Responsible for" — try leading with a strong action verb instead.`);
+    if (noMetricCount > 0) tips.push(`${noMetricCount} of ${bullets.length} detected bullet points don't include a number, %, or $ impact — quantifying results makes them stand out.`);
+  }
+
+  if (!tips.length) tips.push("Your resume has the key sections and contact info recruiters typically look for.");
+  return tips;
+}
+
+function tkLocalPraise(text) {
+  const t = text || "";
+  const wordCount = t.trim().split(/\s+/).filter(Boolean).length;
+  const bullets = tkExtractBullets(t);
+  const lower = t.toLowerCase();
+  const sectionsFound = ["experience", "education", "skills"].filter(s => lower.includes(s));
+  const hasMetrics = bullets.some(b => /\d|%|\$/.test(b));
+
+  const candidates = [];
+  if (sectionsFound.length === 3) candidates.push("Your resume includes clearly labeled Experience, Education, and Skills sections — easy for both recruiters and ATS software to scan.");
+  if (wordCount >= 150 && wordCount <= 1200) candidates.push("Your resume is a reasonable length — detailed enough to show real experience without overwhelming a quick read.");
+  if (bullets.length >= 3) candidates.push(`You've documented ${bullets.length} distinct accomplishments across your experience.`);
+  if (hasMetrics) candidates.push("Some of your bullet points already include real numbers, which helps make your impact concrete.");
+
+  while (candidates.length < 2) candidates.push("Your resume is on file and clearly readable, which is a solid foundation to build on.");
+  return candidates.slice(0, 2);
+}
+
+function tkLocalObservations(text) {
+  const t = text || "";
+  const wordCount = t.trim().split(/\s+/).filter(Boolean).length;
+  const bullets = tkExtractBullets(t);
+
+  return [
+    `Your resume is about ${wordCount} words long.`,
+    `We detected roughly ${bullets.length} bullet point${bullets.length === 1 ? "" : "s"} across your experience.`,
+  ];
+}
+
+function tkRenderAdviceOutput(container, praise, observations, suggestions) {
+  let html = "";
+  if (praise && praise.length) {
+    html += `<p class="widget-note" style="margin:0 0 0.4rem;"><strong>What's working well</strong></p>
+      <ul style="margin:0 0 1rem;padding-left:1.1rem;">${praise.map(p => `<li style="margin-bottom:0.4rem;font-size:14px;">${escapeHtml(p)}</li>`).join("")}</ul>`;
+  }
+  if (observations && observations.length) {
+    html += `<p class="widget-note" style="margin:0 0 0.4rem;"><strong>Other observations</strong></p>
+      <ul style="margin:0 0 1rem;padding-left:1.1rem;">${observations.map(o => `<li style="margin-bottom:0.4rem;font-size:14px;">${escapeHtml(o)}</li>`).join("")}</ul>`;
+  }
+  if (suggestions && suggestions.length) {
+    html += `<p class="widget-note" style="margin:0 0 0.4rem;"><strong>Suggestions to improve</strong></p>
+      <ul style="margin:0;padding-left:1.1rem;">${suggestions.map(s => `<li style="margin-bottom:0.5rem;font-size:14px;">${escapeHtml(s)}</li>`).join("")}</ul>`;
+  }
+  container.innerHTML = html;
+}
+
+async function tkRunImprove() {
+  const output = document.getElementById("tkImproveOutput");
+  output.innerHTML = '<p class="prev-empty">Analyzing\u2026</p>';
+
+  try {
+    const payload = new FormData();
+    payload.append("formType", "aiImprove");
+    payload.append("text", improveResumeText);
+    payload.append("email", improveEmail);
+    const res = await fetch(GAS_URL, { method: "POST", body: payload });
+    const data = await res.json();
+
+    if (data.status === "ok" && (data.praise?.length || data.observations?.length || data.suggestions?.length)) {
+      tkRenderAdviceOutput(output, data.praise, data.observations, data.suggestions);
+      return;
+    }
+    // Fall through to rule-based on any AI failure (including rate limit)
+    tkRenderAdviceOutput(output, tkLocalPraise(improveResumeText), tkLocalObservations(improveResumeText), tkAnalyzeResumeText(improveResumeText).slice(0, 5));
+  } catch (err) {
+    console.error(err);
+    tkRenderAdviceOutput(output, tkLocalPraise(improveResumeText), tkLocalObservations(improveResumeText), tkAnalyzeResumeText(improveResumeText).slice(0, 5));
+  }
+}
+
+setupResumeWidget({
+  launcherId: "improveLauncher", drawerId: "improveDrawer", backdropId: "improveDrawerBackdrop",
+  closeId: "improveDrawerClose", consentId: "improveConsent", fileId: "improveFile",
+  uploadBtnId: "improveUploadBtn", statusId: "improveStatus", outputCardId: "improveOutputCard",
+  onReady: (text, email) => {
+    improveResumeText = text;
+    improveEmail = email;
+    tkRunImprove();
+  },
+});
+
+// ---- Widget 2: Improve Your Resume ----
+let tightenResumeText = "";
+let tightenEmail = "";
+
+function tkRenderRuleBasedBullets(output) {
+  const bullets = tkExtractBullets(tightenResumeText);
+  if (!bullets.length) {
+    output.innerHTML = '<p class="prev-empty">Couldn\'t automatically detect bullet points in this file — try pasting one directly below instead.</p>';
+    return;
+  }
+  const needsWork = bullets.filter(b => TK_WEAK_STARTERS.test(b) || !/\d|%|\$/.test(b)).slice(0, 12);
+  if (!needsWork.length) {
+    output.innerHTML = '<p class="prev-empty">Your bullets already look strong — no passive phrasing or missing metrics detected.</p>';
+    return;
+  }
+  output.innerHTML = tkProviderBadge(null) + needsWork.map(b => `
+    <div style="margin-bottom:0.9rem;">
+      <p style="font-size:13px;color:var(--muted);margin:0 0 0.3rem;"><em>Original:</em> ${escapeHtml(b)}</p>
+      <div class="tk-rewrite-target" data-original="${escapeHtml(b)}"></div>
+    </div>
+  `).join("");
+  output.querySelectorAll(".tk-rewrite-target").forEach(el => {
+    tkRenderCopyableList(el, tkRewriteBullet(el.dataset.original));
+  });
+}
+
+document.getElementById("tkTightenBtn").addEventListener("click", async () => {
+  const output = document.getElementById("tkTightenOutput");
+  output.innerHTML = '<p class="prev-empty">Scanning your bullets\u2026</p>';
+
+  try {
+    const payload = new FormData();
+    payload.append("formType", "aiTighten");
+    payload.append("text", tightenResumeText);
+    payload.append("email", tightenEmail);
+    const res = await fetch(GAS_URL, { method: "POST", body: payload });
+    const data = await res.json();
+
+    if (data.status === "ok" && Array.isArray(data.bullets) && data.bullets.length) {
+      output.innerHTML = tkProviderBadge(data.provider) + data.bullets.map(pair => `
+        <div style="margin-bottom:0.9rem;">
+          <p style="font-size:13px;color:var(--muted);margin:0 0 0.3rem;"><em>Original:</em> ${escapeHtml(pair.original || "")}</p>
+          <div class="tk-rewrite-option">
+            <span>${escapeHtml(pair.improved || "")}</span>
+            <button type="button" class="tk-small-btn tk-copy-btn" data-copy="${escapeHtml(pair.improved || "")}">Copy</button>
+          </div>
+        </div>
+      `).join("");
+      output.querySelectorAll(".tk-copy-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          navigator.clipboard.writeText(btn.dataset.copy);
+          btn.textContent = "Copied!";
+          setTimeout(() => { btn.textContent = "Copy"; }, 1500);
+        });
+      });
+      return;
+    }
+    tkRenderRuleBasedBullets(output);
+  } catch (err) {
+    console.error(err);
+    tkRenderRuleBasedBullets(output);
+  }
+});
+
+document.getElementById("tkRewriteBtn").addEventListener("click", async () => {
+  const input = document.getElementById("tkBulletInput").value.trim();
+  const output = document.getElementById("tkRewriteOutput");
+  if (!input) { output.innerHTML = ""; return; }
+  output.innerHTML = '<p class="prev-empty">Thinking\u2026</p>';
+
+  try {
+    const payload = new FormData();
+    payload.append("formType", "aiRewriteBullet");
+    payload.append("bullet", input);
+    payload.append("email", tightenEmail);
+    const res = await fetch(GAS_URL, { method: "POST", body: payload });
+    const data = await res.json();
+
+    if (data.status === "ok" && Array.isArray(data.variants) && data.variants.length) {
+      output.innerHTML = tkProviderBadge(data.provider);
+      const listEl = document.createElement("div");
+      output.appendChild(listEl);
+      tkRenderCopyableList(listEl, data.variants);
+      return;
+    }
+    output.innerHTML = tkProviderBadge(null);
+    const listEl = document.createElement("div");
+    output.appendChild(listEl);
+    tkRenderCopyableList(listEl, tkRewriteBullet(input));
+  } catch (err) {
+    console.error(err);
+    output.innerHTML = tkProviderBadge(null);
+    const listEl = document.createElement("div");
+    output.appendChild(listEl);
+    tkRenderCopyableList(listEl, tkRewriteBullet(input));
+  }
+});
+
+setupResumeWidget({
+  launcherId: "tightenLauncher", drawerId: "tightenDrawer", backdropId: "tightenDrawerBackdrop",
+  closeId: "tightenDrawerClose", consentId: "tightenConsent", fileId: "tightenFile",
+  uploadBtnId: "tightenUploadBtn", statusId: "tightenStatus", outputCardId: "tightenOutputCard",
+  onReady: (text, email) => {
+    tightenResumeText = text;
+    tightenEmail = email;
+    document.getElementById("tkTightenBtn").click();
+  },
+});
+
+// ---- Widget 3: Tailor To A Job ----
+let tailorResumeText = "";
+let tailorEmail = "";
+const TK_STOPWORDS = new Set(["the","and","for","with","that","this","from","have","will","are","you","your","our","their","a","an","of","to","in","on","at","is","as","be","or","we","it","they","team","role","job","work","working","strong","experience","years","ability","including","etc","using","across","within","other","also","all","any","who","what","when","where","new"]);
+
+function tkExtractKeywords(text, limit) {
+  const words = (text.toLowerCase().match(/[a-z][a-z0-9+.#-]{2,}/g) || []);
+  const counts = {};
+  words.forEach(w => { if (!TK_STOPWORDS.has(w)) counts[w] = (counts[w] || 0) + 1; });
+  return Object.keys(counts).sort((a, b) => counts[b] - counts[a]).slice(0, limit);
+}
+
+function tkRenderKeywordMatch(resultEl, jd) {
+  const resumeTextLower = tailorResumeText.toLowerCase();
+  const jdKeywords = tkExtractKeywords(jd, 20);
+  const matched = jdKeywords.filter(kw => resumeTextLower.includes(kw));
+  const missing = jdKeywords.filter(kw => !resumeTextLower.includes(kw));
+  const pct = jdKeywords.length ? Math.round((matched.length / jdKeywords.length) * 100) : 0;
+
+  resultEl.innerHTML = tkProviderBadge(null) + `
+    <div class="match-score-bar"><div class="match-score-fill" style="width:${pct}%">${pct}%</div></div>
+    <div class="tk-keyword-cols">
+      <div>
+        <p class="widget-note" style="margin-bottom:0.3rem;"><strong>Covered (${matched.length})</strong></p>
+        <ul class="tk-kw-list">${matched.map(k => `<li class="tk-kw-tag matched">${escapeHtml(k)}</li>`).join("") || '<li class="prev-empty">None yet</li>'}</ul>
+      </div>
+      <div>
+        <p class="widget-note" style="margin-bottom:0.3rem;"><strong>Missing (${missing.length})</strong></p>
+        <ul class="tk-kw-list">${missing.map(k => `<li class="tk-kw-tag missing">${escapeHtml(k)}</li>`).join("") || '<li class="prev-empty">Nothing missing</li>'}</ul>
+      </div>
+    </div>
+  `;
+}
+
+document.getElementById("tkMatchBtn").addEventListener("click", async () => {
+  const jd = document.getElementById("tkJdInput").value.trim();
+  const resultEl = document.getElementById("tkMatchResult");
+  if (!jd) { resultEl.innerHTML = ""; return; }
+  if (!tailorResumeText) {
+    resultEl.innerHTML = '<p class="prev-empty">Upload your resume above first.</p>';
+    return;
+  }
+
+  resultEl.innerHTML = '<p class="prev-empty">Rewriting your resume for this job\u2026 (this can take a few seconds)</p>';
+
+  try {
+    const payload = new FormData();
+    payload.append("formType", "aiTailor");
+    payload.append("resumeText", tailorResumeText);
+    payload.append("jobDescription", jd);
+    payload.append("email", tailorEmail);
+    const res = await fetch(GAS_URL, { method: "POST", body: payload });
+    const data = await res.json();
+
+    if (data.status === "ok" && data.tailoredResume) {
+      const resumeId = "tailoredResumeText";
+      const suggestionsHtml = (data.suggestions && data.suggestions.length)
+        ? `<p class="widget-note" style="margin:0 0 0.4rem;"><strong>How to align your resume to this job</strong></p>
+           <ul style="margin:0 0 1rem;padding-left:1.1rem;">${data.suggestions.map(s => `<li style="margin-bottom:0.4rem;font-size:14px;">${escapeHtml(s)}</li>`).join("")}</ul>`
+        : "";
+
+      resultEl.innerHTML = tkProviderBadge(data.provider) + suggestionsHtml +
+        `<p class="widget-note" style="margin:0 0 0.5rem;"><strong>Your tailored resume</strong> &mdash; rewritten using only what's in your original resume. Review before using, and double-check nothing looks off.</p>
+        <pre id="${resumeId}" style="white-space:pre-wrap;font-family:var(--font-body);font-size:13px;line-height:1.6;background:#fff;border:1px solid var(--border-hair);border-radius:4px;padding:1rem;max-height:420px;overflow-y:auto;margin:0 0 0.75rem;">${escapeHtml(data.tailoredResume)}</pre>
+        <div class="tk-btn-row">
+          <button type="button" class="tk-small-btn" id="tkCopyTailoredBtn">Copy text</button>
+          <button type="button" class="tk-small-btn" id="tkDownloadTailoredBtn">Download as .txt</button>
+        </div>`;
+
+      document.getElementById("tkCopyTailoredBtn").addEventListener("click", (ev) => {
+        navigator.clipboard.writeText(data.tailoredResume);
+        ev.target.textContent = "Copied!";
+        setTimeout(() => { ev.target.textContent = "Copy text"; }, 1500);
+      });
+      document.getElementById("tkDownloadTailoredBtn").addEventListener("click", () => {
+        const blob = new Blob([data.tailoredResume], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "Tailored_Resume.txt";
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+      return;
+    }
+    tkRenderKeywordMatch(resultEl, jd);
+  } catch (err) {
+    console.error(err);
+    tkRenderKeywordMatch(resultEl, jd);
+  }
+});
+
+setupResumeWidget({
+  launcherId: "tailorLauncher", drawerId: "tailorDrawer", backdropId: "tailorDrawerBackdrop",
+  closeId: "tailorDrawerClose", consentId: "tailorConsent", fileId: "tailorFile",
+  uploadBtnId: "tailorUploadBtn", statusId: "tailorStatus", outputCardId: "tailorOutputCard",
+  onReady: (text, email) => { tailorResumeText = text; tailorEmail = email; },
+});
 </script>
 </body>
 </html>
